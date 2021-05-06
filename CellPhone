@@ -1,0 +1,56 @@
+Bootstrap: debootstrap
+OSVersion: focal
+MirrorURL: http://archive.ubuntu.com/ubuntu/
+
+%post
+  sed -i 's/main/main restricted universe/g' /etc/apt/sources.list
+  apt-get update
+  # Install R, Python, misc. utilities
+  apt-get install -y libopenblas-dev libcurl4-openssl-dev libopenmpi-dev openmpi-bin openmpi-common openmpi-doc openssh-client openssh-server 
+  
+  apt install -y wget build-essential git vim
+  apt install -y libmetis-dev libtbb-dev libfftw3-dev lib32gcc-7-dev libflann-dev libcilkrts5
+
+  apt install -y curl vim git libhdf5-dev
+  apt install -y libssl-dev libxml2-dev python3-pip python3-igraph
+
+  apt install -y nodejs cmake
+
+  apt-get clean
+
+
+  pip3 install --upgrade pip
+
+  ## record memory usage over time.
+  ## procpath record -i 1 -r 120 -d ff.sqlite
+  ## procpath plot -d ff.sqlite -q cpu -p 123 -f cpu.svg
+  ## procpath plot -d ff.sqlite -q rss -p 123 -f rss.svg
+
+  pip3 install --user procpath
+
+  pip3 install --no-cache-dir -U numpy pybind11
+  pip3 install --no-cache-dir -U dask[array] dask[distributed]
+
+  pip3 install git+https://github.com/fraenkel-lab/pcst_fast.git
+  pip3 install jupyterlab ipython-autotime
+  
+  ## we need to get R installed here...
+  deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/
+  apt update
+  apt install -y r-base r-base-dev r-cran-ggplot2 r-cran-pheatmap
+
+
+  #export CFLAGS="-Wno-deprecated-declarations -Wno-unreachable-code"
+  #pip3 install numpy scipy cellphonedb
+
+  ## the templates funnily are root read only and hence unusable
+ # chmod 777 -R  /usr/share/jupyter/nbconvert/templates/
+
+  mkdir /workspace
+  echo "jupyter lab --port 9734 --ip=0.0.0.0 --allow-root --no-browser" > /workspace/launch_jupyter.sh
+  chmod +x /workspace/launch_jupyter.sh
+
+%runscript
+  /workspace/launch_jupyter.sh
+
+

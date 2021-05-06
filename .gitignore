@@ -1,0 +1,8 @@
+*.sif
+ubuntu_sandbox
+nextflow_rnaseq
+TEsmall
+cellPhone
+.ipynb_checkpoints
+*.swp
+*.RData
