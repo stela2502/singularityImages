@@ -1,4 +1,4 @@
-*.sif
+test*
 ubuntu_sandbox
 nextflow_rnaseq
 TEsmall

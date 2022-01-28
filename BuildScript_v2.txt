@@ -3,6 +3,7 @@ OSVersion: focal
 MirrorURL: http://archive.ubuntu.com/ubuntu/
 
 %post
+  export PYTHONNOUSERSITE="true"
   sed -i 's/main/main restricted universe/g' /etc/apt/sources.list
   apt-get update
   # Install R, Python, misc. utilities
@@ -14,24 +15,24 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
   apt install -y curl vim git libhdf5-dev
   apt install -y libssl-dev libxml2-dev python3-pip
 
-  apt install -y nodejsi cmake
+  apt install -y nodejs cmake
 
   ## next is important for python tsne
-  apt-get install libatlas-base-dev
-
-  apt-get clean
+  apt install -y libatlas-base-dev
+  apt install -y pandoc
+  apt clean
 
 
   pip3 install --upgrade pip
-  pip3 install --no-cache-dir -U numpy pybind11
-  pip3 install --no-cache-dir -U dask[array] dask[distributed]
+  pip3 install --upgrade --no-cache-dir -U numpy==1.21.5 pybind11
+  pip3 install --upgrade --no-cache-dir -U dask[array] dask[distributed]
 
-  pip3 install git+https://github.com/fraenkel-lab/pcst_fast.git
-  pip3 install jupyterlab ipython-autotime
+  pip3 install --upgrade git+https://github.com/fraenkel-lab/pcst_fast.git
+  pip3 install --upgrade jupyterlab ipython-autotime
   
-  pip3 install Sphinx sphinx-autodoc-typehints nbsphinx sphinx_rtd_theme
+  pip3 install --upgrade Sphinx sphinx-autodoc-typehints nbsphinx sphinx_rtd_theme
 
-  pip3 install scarf
+  pip3 install --upgrade scarf
 
   #pip install git+https://github.com/parashardhapola/scarf.git
   #untill this is not public mount the local git filder under /mnt/git and
@@ -39,20 +40,22 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
   cd /mnt/git/scarf && pip install -U .
 
 
-  pip3 install scanpy louvain leiden
+  pip3 install --upgrade scanpy[louvain]
+  pip3 install --upgrade scanpy[leiden]
 
-  pip3 install python-igraph
+  pip3 install --upgrade igraph
+  pip3 install --upgrade phate
 
-  pip3 install scvelo
+  pip3 install --upgrade scvelo
 
-  pip3 install harmonypy
+  pip3 install --upgrade harmonypy
   pip3 install mnnpy
   pip3 install bbknn
 
   pip3 install palantir
   pip3 install trimap
   pip3 install sam
-  pip3 install tsne
+  pip3 install --upgrade tsne
 
   pip3 install pybind11 hnswlib
 
@@ -61,18 +64,20 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
   ## procpath plot -d ff.sqlite -q cpu -p 123 -f cpu.svg
   ## procpath plot -d ff.sqlite -q rss -p 123 -f rss.svg
 
-  pip3 install --user procpath
-
-  pip3 install cellrank
-
-  pip3 install cellphonedb
+  pip3 install --upgrade procpath
 
   ## the templates funnily are root read only and hence unusable
-  chmod 777 -R  /usr/share/jupyter/nbconvert/templates/
+
+  pip3 install --upgrade nbconvert
+
+  pip3 install git+https://github.com/stela2502/ScanpyAutoAnalyzer
+  #chmod 777 -R  /usr/share/jupyter/nbconvert/templates/
 
   # Install R
-  deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/  
-  apt update
+  apt install -y --no-install-recommends software-properties-common dirmngr
+  wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
+  add-apt-repository "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/"
+
   apt install -y r-base r-base-dev
 
   echo "install.packages('devtools')" > Install_devtools.R
@@ -81,7 +86,7 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
   echo "install.packages('Seurat')" > Install_Seurat.R
   R CMD BATCH Install_Seurat.R
 
-  echo "devtools::install_github('sonejilab/cellexalvrR', ref='V_0.14')" > Install_cellexalvrR.R
+  echo "devtools::install_github('sonejilab/cellexalvrR' )" > Install_cellexalvrR.R
   R CMD BATCH Install_cellexalvrR.R
 
   echo "devtools::install_github('satijalab/seurat-data')" > Install_seurat-data.R
@@ -91,9 +96,13 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
   #  echo "devtools::install_github('stela2502/BioData')" > Install_BioData.R
   #  R CMD BATCH Install_BioData.R
 
+  apt install -y jupyter 
+  pip3 install jupyterlab --upgrade
   echo 'devtools::install_github("IRkernel/IRkernel")' > Install_IRkernel.R
   echo 'IRkernel::installspec(user=FALSE)' >> Install_IRkernel.R
-  R CMD BATCH Install_IRkernel.R
+  #R CMD BATCH Install_IRkernel.R
+
+  pip3 install --upgrade cellphonedb
 
   mkdir /workspace
   echo "jupyter lab --port 9734 --ip=0.0.0.0 --allow-root --no-browser" > /workspace/launch_jupyter.sh
@@ -103,4 +112,5 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
   /workspace/launch_jupyter.sh
 
 %environment
+    export PYTHONNOUSERSITE="true"
     export MYVAR="Hello"
