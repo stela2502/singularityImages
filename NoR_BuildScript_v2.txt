@@ -52,18 +52,7 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
   pip3 install mnnpy
   pip3 install bbknn
 
-  git clone -b release https://gitlab.com/petsc/petsc.git petsc
-  cd petsc
-  mkdir /opt/petsc
-  #chown user:group /opt/petsc
-  #./configure --download-mpich --download-fblaslapack --with-petsc4py --prefix=/opt/petsc
-  ./configure --download-mpich --download-f2claslapack --with-petsc4py --with-fc=0 --prefix=/opt/petsc/
-  make PETSC_DIR=/petsc PETSC_ARCH=arch-linux-c-debug all
-  make PETSC_DIR=/petsc PETSC_ARCH=arch-linux-c-debug install
-  echo 'export PYTHONPATH="${PYTHONPATH}:/opt/petsc/lib"' >> /etc/bash.bashrc
-
-  export PYTHONPATH="${PYTHONPATH}:/opt/petsc/lib"
-
+  apt install -y slepc-dev petsc-dev libopenblas64-openmp-dev python3-petsc4py python3-slepc4py
   pip3 install 'cellrank[krylov]'
 
   pip3 install palantir
@@ -95,16 +84,16 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
   apt install -y r-base r-base-dev
 
   echo "install.packages('devtools')" > Install_devtools.R
-  R CMD BATCH Install_devtools.R
+  #R CMD BATCH Install_devtools.R
 
   echo "install.packages('Seurat')" > Install_Seurat.R
-  R CMD BATCH Install_Seurat.R
+  #R CMD BATCH Install_Seurat.R
 
   echo "devtools::install_github('sonejilab/cellexalvrR' )" > Install_cellexalvrR.R
-  R CMD BATCH Install_cellexalvrR.R
+  #R CMD BATCH Install_cellexalvrR.R
 
   echo "devtools::install_github('satijalab/seurat-data')" > Install_seurat-data.R
-  R CMD BATCH Install_seurat-data.R
+  #R CMD BATCH Install_seurat-data.R
 
   # skip that as it would need rgl to be installed
   #  echo "devtools::install_github('stela2502/BioData')" > Install_BioData.R
