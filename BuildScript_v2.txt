@@ -52,18 +52,51 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
   pip3 install mnnpy
   pip3 install bbknn
 
-  git clone -b release https://gitlab.com/petsc/petsc.git petsc
-  cd petsc
-  mkdir /opt/petsc
-  #chown user:group /opt/petsc
-  #./configure --download-mpich --download-fblaslapack --with-petsc4py --prefix=/opt/petsc
+  cd /root
+  mkdir src
+  cd src
+
+  export PETSC_ARCH='arch-linux-c-debug'
+
+  curl https://slepc.upv.es/download/distrib/slepc-3.16.2.tar.gz -o slepc-3.16.2.tar.gz
+  curl https://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.16.2.tar.gz -o petsc-lite-3.16.2.tar.gz
+
+  tar -zxf petsc-lite-3.16.2.tar.gz
+
+  cd petsc-3.16.2
   ./configure --download-mpich --download-f2claslapack --with-petsc4py --with-fc=0 --prefix=/opt/petsc/
-  make PETSC_DIR=/petsc PETSC_ARCH=arch-linux-c-debug all
-  make PETSC_DIR=/petsc PETSC_ARCH=arch-linux-c-debug install
-  echo 'export PYTHONPATH="${PYTHONPATH}:/opt/petsc/lib"' >> /etc/bash.bashrc
+  make PETSC_DIR=/root/src/petsc-3.16.2 PETSC_ARCH=arch-linux-c-debug all
+  make PETSC_DIR=/root/src/petsc-3.16.2 PETSC_ARCH=arch-linux-c-debug install
+
+  cd ..
+  tar -zxf slepc-3.16.2.tar.gz
+  cd slepc-3.16.2
+  ./configure --prefix=/opt/petsc/ --with-slepc4py=yes  --with-clean
+  make SLEPC_DIR=/root/src/slepc-3.16.2 PETSC_DIR=/opt/petsc
+  make SLEPC_DIR=/root/src/slepc-3.16.2 PETSC_DIR=/opt/petsc install
+
+
+  #mkdir /opt/petsc
+  #export PETSC_DIR=/root/petsc
+  #export SLEPC_DIR=/slepc
+  #export PETSC_ARCH='arch-linux-c-debug'
+
+  #chown user:group /opt/petsc
+  #./configure --download-mpich --download-f2claslapack --with-petsc4py --with-fc=0 --prefix=/opt/petsc/
+  #make all
+  #make install
+  #echo 'export PYTHONPATH="${PYTHONPATH}:/opt/petsc/lib"' >> /etc/bash.bashrc
+
+  #export PYTHONPATH="${PYTHONPATH}:/opt/petsc/lib"
+  
+  cd ..
+  git clone https://github.com/firedrakeproject/slepc.git
+  
+  #cd $SLEPC_DIR
+  #./configure --prefix=/opt/slepc
 
   export PYTHONPATH="${PYTHONPATH}:/opt/petsc/lib"
-
+  
   pip3 install 'cellrank[krylov]'
 
   pip3 install palantir
@@ -117,6 +150,8 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
   #R CMD BATCH Install_IRkernel.R
 
   pip3 install --upgrade cellphonedb
+  ## pandas has a but that kills cellrank and likely a lot more, but is fixed in the git repo.
+  pip3 install git+https://github.com/pandas-dev/pandas.git
 
   mkdir /workspace
   echo "jupyter lab --port 9734 --ip=0.0.0.0 --allow-root --no-browser" > /workspace/launch_jupyter.sh
