@@ -7,7 +7,7 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
   sed -i 's/main/main restricted universe/g' /etc/apt/sources.list
   apt-get update
   # Install R, Python, misc. utilities
-  apt-get install -y libopenblas-dev libcurl4-openssl-dev libopenmpi-dev openmpi-bin openmpi-common openmpi-doc openssh-client openssh-server 
+  apt-get install -y libopenblas-dev libcurl4-openssl-dev libopenmpi-dev openmpi-bin openmpi-common openmpi-doc openssh-client openssh-server libgeos-dev
   
   apt install -y wget build-essential git vim
   apt install -y libmetis-dev libtbb-dev libfftw3-dev lib32gcc-7-dev libflann-dev libcilkrts5
@@ -42,6 +42,8 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
 
   pip3 install --upgrade scanpy[louvain]
   pip3 install --upgrade scanpy[leiden]
+  pip3 install --upgrade scrublet
+  pip3 install --upgrade pypairs
 
   pip3 install --upgrade igraph
   pip3 install --upgrade phate
@@ -145,9 +147,37 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
 
   apt install -y jupyter 
   pip3 install jupyterlab --upgrade
+
   echo 'devtools::install_github("IRkernel/IRkernel")' > Install_IRkernel.R
   echo 'IRkernel::installspec(user=FALSE)' >> Install_IRkernel.R
-  #R CMD BATCH Install_IRkernel.R
+  R CMD BATCH Install_IRkernel.R
+
+  echo "if (!require("BiocManager", quietly = TRUE))" > Install_DESeq2.R
+  echo "  install.packages("BiocManager")" >> Install_DESeq2.R
+  echo "" >> Install_DESeq2.R
+  echo "BiocManager::install("DESeq2")"  >> Install_DESeq2.R
+  R CMD BATCH Install_DESeq2.R
+
+  ## SingleR
+  echo "if (!require("BiocManager", quietly = TRUE))" > Install_DESeq2.R 
+  echo "  install.packages("BiocManager")" >> Install_DESeq2.R
+  echo "" >> Install_DESeq2.R
+  echo "library(celldex)"  >> Install_SingleR.R
+  echo "hpca.se <- HumanPrimaryCellAtlasData()"  >> Install_SingleR.R
+  echo "hpca.se <- LaMannoBrainData()"  >> Install_SingleR.R
+  echo "hpca.se <- MuraroPancreasData()"  >> Install_SingleR.R
+  echo "hpca.se <- GrunPancreasData()"  >> Install_SingleR.R
+  echo "hpca.se <- ImmGenData()"  >> Install_SingleR.R
+  echo "hpca.se <- MouseRNAseqData()"  >> Install_SingleR.R
+  echo "hpca.se <- BlueprintEncodeData()"  >> Install_SingleR.R
+  echo "hpca.se <- DatabaseImmuneCellExpressionData()"  >> Install_SingleR.R
+  echo "hpca.se <- NovershternHematopoieticData()"  >> Install_SingleR.R
+  echo "hpca.se <- MonacoImmuneData()"  >> Install_SingleR.R
+  
+  R CMD BATCH Install_SingleR.R
+
+  echo "BiocManager::install(c("circlize", 'digest', 'cluster', 'ComplexHeatmap' ))"  >> Install_DESeq2_heatmap.R
+  R CMD BATCH Install_DESeq2_heatmap.R
 
   pip3 install --upgrade cellphonedb
   ## pandas has a but that kills cellrank and likely a lot more, but is fixed in the git repo.

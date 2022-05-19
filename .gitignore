@@ -8,3 +8,7 @@ cellPhone
 *.RData
 *.sif
 SingleCells_*.sif
+BioData/
+*.ipynb
+cellphoneDB/
+parse/
