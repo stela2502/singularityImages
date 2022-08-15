@@ -12,3 +12,5 @@ BioData/
 *.ipynb
 cellphoneDB/
 parse/
+build*
+/parse/

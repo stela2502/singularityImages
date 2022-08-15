@@ -19,4 +19,18 @@ pip3 install --prefix=/usr/local <package name>
 ```
 
 
+## Usage
+
+To build the singularity image described here you need to clone the repo and then do
+```
+make restart
+```
+to obtain a sandbox version of the package and
+```
+make build
+```
+to obtain the actual image.
+
+You can use the ./shell.sh to fire up the sandbox to manually change the sandbox.
+This sppeds up the build process if you want to just update any package.
 

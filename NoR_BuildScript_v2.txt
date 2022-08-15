@@ -57,8 +57,7 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
 
   pip3 install palantir
   pip3 install trimap
-  pip3 install sam
-  pip3 install --upgrade tsne
+  pip3 install --upgrade tsne pynndescent
 
   pip3 install pybind11 hnswlib
 

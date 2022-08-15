@@ -1,5 +1,5 @@
 Bootstrap: debootstrap
-OSVersion: focal
+OSVersion: jammy
 MirrorURL: http://archive.ubuntu.com/ubuntu/
 
 %post
@@ -9,8 +9,10 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
   # Install R, Python, misc. utilities
   apt-get install -y libopenblas-dev libcurl4-openssl-dev libopenmpi-dev openmpi-bin openmpi-common openmpi-doc openssh-client openssh-server libgeos-dev
   
-  apt install -y wget build-essential git vim
-  apt install -y libmetis-dev libtbb-dev libfftw3-dev lib32gcc-7-dev libflann-dev libcilkrts5
+  apt install -y wget build-essential git vim libsodium-dev
+  apt install -y libmetis-dev libtbb-dev libfftw3-dev lib32gcc-11-dev libflann-dev
+  apt install -y libmkl-full-dev
+
 
   apt install -y curl vim git libhdf5-dev
   apt install -y libssl-dev libxml2-dev python3-pip
@@ -24,21 +26,16 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
 
 
   pip3 install --upgrade pip
-  pip3 install --upgrade --no-cache-dir -U numpy==1.21.5 pybind11
+  pip3 install --upgrade --no-cache-dir -U numpy pybind11
   pip3 install --upgrade --no-cache-dir -U dask[array] dask[distributed]
 
   pip3 install --upgrade git+https://github.com/fraenkel-lab/pcst_fast.git
   pip3 install --upgrade jupyterlab ipython-autotime
   
+  pip3 install --upgrade scikit-network
   pip3 install --upgrade Sphinx sphinx-autodoc-typehints nbsphinx sphinx_rtd_theme
 
-  pip3 install --upgrade scarf
-
-  #pip install git+https://github.com/parashardhapola/scarf.git
-  #untill this is not public mount the local git filder under /mnt/git and
-  # e.g. singularity build --fakeroot -b~/git:/mnt/git ubuntu::latest Singularity
-  cd /mnt/git/scarf && pip install -U .
-
+ # pip3 install --upgrade scarf
 
   pip3 install --upgrade scanpy[louvain]
   pip3 install --upgrade scanpy[leiden]
@@ -54,59 +51,60 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
   pip3 install mnnpy
   pip3 install bbknn
 
-  cd /root
-  mkdir src
-  cd src
-
-  export PETSC_ARCH='arch-linux-c-debug'
-
-  curl https://slepc.upv.es/download/distrib/slepc-3.16.2.tar.gz -o slepc-3.16.2.tar.gz
-  curl https://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.16.2.tar.gz -o petsc-lite-3.16.2.tar.gz
-
-  tar -zxf petsc-lite-3.16.2.tar.gz
-
-  cd petsc-3.16.2
-  ./configure --download-mpich --download-f2claslapack --with-petsc4py --with-fc=0 --prefix=/opt/petsc/
-  make PETSC_DIR=/root/src/petsc-3.16.2 PETSC_ARCH=arch-linux-c-debug all
-  make PETSC_DIR=/root/src/petsc-3.16.2 PETSC_ARCH=arch-linux-c-debug install
-
-  cd ..
-  tar -zxf slepc-3.16.2.tar.gz
-  cd slepc-3.16.2
-  ./configure --prefix=/opt/petsc/ --with-slepc4py=yes  --with-clean
-  make SLEPC_DIR=/root/src/slepc-3.16.2 PETSC_DIR=/opt/petsc
-  make SLEPC_DIR=/root/src/slepc-3.16.2 PETSC_DIR=/opt/petsc install
-
-
-  #mkdir /opt/petsc
-  #export PETSC_DIR=/root/petsc
-  #export SLEPC_DIR=/slepc
-  #export PETSC_ARCH='arch-linux-c-debug'
-
-  #chown user:group /opt/petsc
-  #./configure --download-mpich --download-f2claslapack --with-petsc4py --with-fc=0 --prefix=/opt/petsc/
-  #make all
-  #make install
-  #echo 'export PYTHONPATH="${PYTHONPATH}:/opt/petsc/lib"' >> /etc/bash.bashrc
-
-  #export PYTHONPATH="${PYTHONPATH}:/opt/petsc/lib"
-  
-  cd ..
-  git clone https://github.com/firedrakeproject/slepc.git
-  
-  #cd $SLEPC_DIR
-  #./configure --prefix=/opt/slepc
-
-  export PYTHONPATH="${PYTHONPATH}:/opt/petsc/lib"
-  
-  pip3 install 'cellrank[krylov]'
+## Things I need to install for cellrank to actually work... But cellrank itself seams to not help...
+#  cd /root
+#  mkdir src
+#  cd src
+#
+#  export PETSC_ARCH='arch-linux-c-debug'
+#
+#  curl https://slepc.upv.es/download/distrib/slepc-3.16.2.tar.gz -o slepc-3.16.2.tar.gz
+#  curl https://ftp.mcs.anl.gov/pub/petsc/release-snapshots/petsc-lite-3.16.2.tar.gz -o petsc-lite-3.16.2.tar.gz
+#
+#  tar -zxf petsc-lite-3.16.2.tar.gz
+#
+#  cd petsc-3.16.2
+#  ./configure --download-mpich --download-f2claslapack --with-petsc4py --with-fc=0 --prefix=/opt/petsc/
+#  make PETSC_DIR=/root/src/petsc-3.16.2 PETSC_ARCH=arch-linux-c-debug all
+#  make PETSC_DIR=/root/src/petsc-3.16.2 PETSC_ARCH=arch-linux-c-debug install
+#
+#  cd ..
+#  tar -zxf slepc-3.16.2.tar.gz
+#  cd slepc-3.16.2
+#  ./configure --prefix=/opt/petsc/ --with-slepc4py=yes  --with-clean
+#  make SLEPC_DIR=/root/src/slepc-3.16.2 PETSC_DIR=/opt/petsc
+#  make SLEPC_DIR=/root/src/slepc-3.16.2 PETSC_DIR=/opt/petsc install
+#
+#
+#  #mkdir /opt/petsc
+#  #export PETSC_DIR=/root/petsc
+#  #export SLEPC_DIR=/slepc
+#  #export PETSC_ARCH='arch-linux-c-debug'
+#
+#  #chown user:group /opt/petsc
+#  #./configure --download-mpich --download-f2claslapack --with-petsc4py --with-fc=0 --prefix=/opt/petsc/
+#  #make all
+#  #make install
+#  #echo 'export PYTHONPATH="${PYTHONPATH}:/opt/petsc/lib"' >> /etc/bash.bashrc
+#
+#  #export PYTHONPATH="${PYTHONPATH}:/opt/petsc/lib"
+#  
+#  cd ..
+#  git clone https://github.com/firedrakeproject/slepc.git
+#  
+#  #cd $SLEPC_DIR
+#  #./configure --prefix=/opt/slepc
+#
+#  export PYTHONPATH="${PYTHONPATH}:/opt/petsc/lib"
+#  
+#  pip3 install 'cellrank[krylov]'
 
   pip3 install palantir
-  pip3 install trimap
-  pip3 install sam
+  #pip3 install trimap
+  #pip3 install sam
   pip3 install --upgrade tsne
 
-  pip3 install pybind11 hnswlib
+  pip3 install pybind11 hnswlib memory_profiler
 
   ## record memory usage over time.
   ## procpath record -i 1 -r 120 -d ff.sqlite
