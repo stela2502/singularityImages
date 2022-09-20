@@ -217,6 +217,12 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
   echo "BiocManager::install(c('circlize', 'digest', 'cluster', 'ComplexHeatmap' ))"  >> Install_DESeq2_heatmap.R
   R CMD BATCH Install_DESeq2_heatmap.R
 
+  ## CA - Correspondence Analysis in R
+  echo 'install.packages(c("FactoMineR", "factoextra"))' > install_ca.R
+  R CMD BATCH install_ca.R
+  ## and Python
+  pip3 install prince
+
   #pip3 install --upgrade cellphonedb
   ## pandas has a but that kills cellrank and likely a lot more, but is fixed in the git repo.
   pip3 install git+https://github.com/pandas-dev/pandas.git
