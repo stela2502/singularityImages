@@ -119,6 +119,8 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
 
   pip3 install --upgrade nbconvert
 
+  pip3 install jupyter_contrib_nbextensions
+
   pip3 install git+https://github.com/stela2502/ScanpyAutoAnalyzer
   #chmod 777 -R  /usr/share/jupyter/nbconvert/templates/
 
