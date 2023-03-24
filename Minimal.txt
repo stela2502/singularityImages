@@ -31,7 +31,8 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
   pip3 install --upgrade --no-cache-dir -U dask[array] dask[distributed]
 
   pip3 install --upgrade git+https://github.com/fraenkel-lab/pcst_fast.git
-  pip3 install --upgrade jupyterlab ipython-autotime
+  pip3 install --upgrade jupyterlab ipython-autotime ipywidgets
+
 
 %runscript
   /workspace/launch_jupyter.sh

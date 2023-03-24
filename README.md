@@ -1,5 +1,21 @@
 # singularityImages
 
+# Minimal.txt
+
+The Minimal.txt is a singularity definition file that 'installs' a minimal jupyter notebook in a sandbox.
+You can either change this Minimal.txt and install the packages you need or create a sandbox and install your software there.
+
+How to create a sandbox and convert that into an image is shown in the Makefile (restart_min and build_min).
+
+The shell.sh and run.sh scripts explain how to interact with a sandbox resp. an image.
+
+If you 'run' these images they will start a web browser delivering a Jupyter notebook.
+All software you want to run in this session needs to be installed in the image.
+
+Have much fun with this!
+
+# The other files in the repo
+
 This git repo is a skelleton of my work I have done on singularity images.
 These images are used on aurora-ls2 to run analyses on the blades instead of the frontend.
 
