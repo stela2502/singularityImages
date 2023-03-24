@@ -42,6 +42,7 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
 
   pip3 install --upgrade scanpy[louvain]
   pip3 install --upgrade scanpy[leiden]
+  pip3 install --upgrade pyroe
 
   pip3 install --upgrade igraph
   pip3 install --upgrade phate
