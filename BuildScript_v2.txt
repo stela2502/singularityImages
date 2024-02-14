@@ -130,6 +130,9 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
   wget https://github.com/arq5x/bedtools2/releases/download/v2.30.0/bedtools.static.binary
   mv bedtools.static.binary /usr/bin/bedtools
   chmod a+x /usr/bin/bedtools
+  
+  # cool integration method using PyTorch in the back.
+  pip3 install scvi-tools
 
   #and here comes the scary bit: Rust and alevin-fry - install it from git :-D
   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
