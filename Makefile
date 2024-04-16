@@ -2,12 +2,12 @@ HOME_PATH := $(HOME)
 
 sandbox = 'ubuntu_sandbox'
 minimal_sand = 'minimal_sandbox'
-target = 'SingleCells_v1.5.sif'
+target = 'SingleCells_v1.6.sif'
 minimal_target = 'ThisMinimal.sif'
 
 #lunarc_path = 'stefanl@aurora-ls2.lunarc.lu.se:common/software/SingSingCell/1.5/'
-lunarc_path = '${HOME_PATH}/sens05_shared/common/software/SingSingCell/1.5/'
-buildScript = 'BuildScript_v2.txt'
+lunarc_path = '${HOME_PATH}/sens05_shared/common/software/SingSingCell/1.6/'
+buildScript = 'SingSingCell_1.6.txt'
 minimal_buildScript = "Minimal.txt"
 
 singularity_cmd="apptainer"

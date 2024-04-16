@@ -1,0 +1,178 @@
+Bootstrap: debootstrap
+OSVersion: jammy
+MirrorURL: http://archive.ubuntu.com/ubuntu/
+
+%post
+  ## COPY PASTE FROM THE MINIMAL.TXT ##############################
+  export PYTHONNOUSERSITE="true"
+  sed -i 's/main/main restricted universe/g' /etc/apt/sources.list
+  apt-get update
+  # Install R, Python, misc. utilities
+  apt-get install -y libopenblas-dev libcurl4-openssl-dev libopenmpi-dev openmpi-bin openmpi-common openmpi-doc openssh-client openssh-server
+
+  apt install -y wget build-essential git vim software-properties-common
+
+  apt install -y curl vim git libhdf5-dev
+  apt install -y libssl-dev libxml2-dev python3-pip
+
+  apt install -y nodejs cmake
+
+  ## next is important for python tsne
+  apt install -y libatlas-base-dev
+  ## cellexalvrR
+  apt install -y pandoc
+
+  pip3 install --upgrade pip
+  pip3 install --upgrade jupyter jupyterlab ipython-autotime ipywidgets
+
+  add-apt-repository "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/"
+  wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
+  add-apt-repository "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/"
+
+  apt  install -y r-cran-irkernel r-cran-irdisplay r-cran-seurat python3-ipykernel
+
+  #######################################################################
+
+  apt-get install libc6-dev ## TSNE needs that
+
+  pip3 install --upgrade scanpy scvelo anndata
+  
+  pip3 install --upgrade scikit-network
+  pip3 install --upgrade Sphinx sphinx-autodoc-typehints nbsphinx sphinx_rtd_theme
+
+  pip3 install git+https://github.com/fraenkel-lab/pcst_fast.git@deb3236cc26ee9fee77d5af40fac3f12bb753850
+  pip3 install -U topacedo
+  pip3 install --upgrade scarf
+
+  pip3 install --upgrade scanpy[louvain]
+  pip3 install --upgrade scanpy[leiden]
+  pip3 install --upgrade scrublet
+  pip3 install --upgrade pypairs
+
+  pip3 install --upgrade igraph
+  pip3 install --upgrade phate
+
+  pip3 install --upgrade scvelo
+
+  pip3 install --upgrade harmonypy
+  pip3 install mnnpy
+  pip3 install bbknn
+
+  pip3 install palantir
+#  pip3 install --upgrade tsne
+
+  pip3 install pybind11 hnswlib memory_profiler
+
+  pip3 install --upgrade procpath
+
+  ## the templates funnily are root read only and hence unusable
+
+  pip3 install --upgrade nbconvert
+
+  pip3 install jupyter_contrib_nbextensions
+
+  #pip3 install git+https://github.com/stela2502/ScanpyAutoAnalyzer
+  #chmod 777 -R  /usr/share/jupyter/nbconvert/templates/
+
+  # to create genomes for alevin-fry
+  pip3 install pyroe
+  apt  install -y gffread rustc bedtools ## in the wrong version
+  #wget https://github.com/arq5x/bedtools2/releases/download/v2.30.0/bedtools.static.binary
+  #mv bedtools.static.binary /usr/bin/bedtools
+  #chmod a+x /usr/bin/bedtools
+  
+  # cool integration method using PyTorch in the back.
+  pip3 install scvi-tools
+
+  #and here comes the scary bit: Rust and alevin-fry - install it from git :-D
+  #curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+  #source ~/.cargo/env
+  #git clone https://github.com/COMBINE-lab/alevin-fry.git
+  #cd alevin-fry
+  #cargo build --release  
+  #cp -r target/release/ /opt/alevin-fry
+  #echo "export PATH=/opot/alevin-fry/:$PATH" >~/.bashrc
+
+  #wget https://github.com/COMBINE-lab/salmon/releases/download/v1.9.0/salmon-1.9.0_linux_x86_64.tar.gz
+  #tar -zxf salmon-1.9.0_linux_x86_64.tar.gz
+  #mv salmon-1.9.0_linux_x86_64 /opt/
+
+  # Install R
+
+  echo "install.packages('devtools')" > Install_devtools.R
+  R CMD BATCH Install_devtools.R
+
+  echo "install.packages('Seurat')" > Install_Seurat.R
+  R CMD BATCH Install_Seurat.R
+
+  echo "devtools::install_github('sonejilab/cellexalvrR' )" > Install_cellexalvrR.R
+  R CMD BATCH Install_cellexalvrR.R
+
+  echo "devtools::install_github('satijalab/seurat-data')" > Install_seurat-data.R
+  R CMD BATCH Install_seurat-data.R
+
+  echo "if (!require('BiocManager', quietly = TRUE))" > Install_DESeq2.R
+  echo "  install.packages('BiocManager')" >> Install_DESeq2.R
+  echo "" >> Install_DESeq2.R
+  echo "BiocManager::install('DESeq2')"  >> Install_DESeq2.R
+  R CMD BATCH Install_DESeq2.R
+
+  echo "BiocManager::install('SingleR')" > Install_SingleR.R
+  echo "BiocManager::install('celldex')" >> Install_SingleR.R
+  echo "BiocManager::install('scRNAseq')" >> Install_SingleR.R
+  echo "BiocManager::install('scuttle')" >> Install_SingleR.R
+  echo "BiocManager::install('zellkonverter')" >> Install_SingleR.R)
+  echo "BiocManager::install('scran')" >> Install_SingleR.R)
+  R CMD BATCH Install_SingleR.R
+
+  ## SingleR
+  mkdir -p /opt/celldex/dataset/
+  chmod +r -R /opt/celldex
+
+  echo "library(celldex)"  > Install_SingleR.R
+  echo "hpca.se <- HumanPrimaryCellAtlasData()"  >> Install_SingleR.R
+  echo "save( hpca.se, file='/opt/celldex/dataset/HumanPrimaryCellAtlasData.RData' )"  >> Install_SingleR.R
+  
+  echo "hpca.se <- ImmGenData()"  >> Install_SingleR.R
+  echo "save( hpca.se, file='/opt/celldex/dataset/ImmGenData.RData' )"  >> Install_SingleR.R
+
+  echo "hpca.se <- MouseRNAseqData()"  >> Install_SingleR.R
+  echo "save( hpca.se, file='/opt/celldex/dataset/MouseRNAseqData.RData' )"  >> Install_SingleR.R
+
+  echo "hpca.se <- BlueprintEncodeData()"  >> Install_SingleR.R
+  echo "save( hpca.se, file='/opt/celldex/dataset/BlueprintEncodeData.RData' )"  >> Install_SingleR.R
+
+  echo "hpca.se <- DatabaseImmuneCellExpressionData()"  >> Install_SingleR.R
+  echo "save( hpca.se, file='/opt/celldex/dataset/DatabaseImmuneCellExpressionData.RData' )"  >> Install_SingleR.R
+
+  echo "hpca.se <- NovershternHematopoieticData()"  >> Install_SingleR.R
+  echo "save( hpca.se, file='/opt/celldex/dataset/NovershternHematopoieticData.RData' )"  >> Install_SingleR.R
+
+  echo "hpca.se <- MonacoImmuneData()"  >> Install_SingleR.R
+  echo "save( hpca.se, file='/opt/celldex/dataset/MonacoImmuneData.RData' )"  >> Install_SingleR.R
+  
+  R CMD BATCH Install_SingleR.R
+
+  echo "BiocManager::install(c('circlize', 'digest', 'cluster', 'ComplexHeatmap' ))"  >> Install_DESeq2_heatmap.R
+  R CMD BATCH Install_DESeq2_heatmap.R
+
+  ## CA - Correspondence Analysis in R
+  echo 'install.packages(c("FactoMineR", "factoextra"))' > install_ca.R
+  R CMD BATCH install_ca.R
+  ## and Python
+  pip3 install prince
+
+  #pip3 install --upgrade cellphonedb
+  ## pandas has a but that kills cellrank and likely a lot more, but is fixed in the git repo.
+  pip3 install git+https://github.com/pandas-dev/pandas.git
+
+  mkdir /workspace
+  echo "jupyter lab --port 9734 --ip=0.0.0.0 --allow-root --no-browser" > /workspace/launch_jupyter.sh
+  chmod +x /workspace/launch_jupyter.sh
+
+%runscript
+  /workspace/launch_jupyter.sh
+
+%environment
+  export PYTHONNOUSERSITE="true"
+
