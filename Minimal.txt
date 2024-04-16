@@ -1,5 +1,5 @@
 Bootstrap: debootstrap
-OSVersion: focal
+OSVersion: jammy
 MirrorURL: http://archive.ubuntu.com/ubuntu/
 
 %post
@@ -9,8 +9,7 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
   # Install R, Python, misc. utilities
   apt-get install -y libopenblas-dev libcurl4-openssl-dev libopenmpi-dev openmpi-bin openmpi-common openmpi-doc openssh-client openssh-server
 
-  apt install -y wget build-essential git vim 
-  apt install -y libmetis-dev libtbb-dev libfftw3-dev lib32gcc-7-dev libflann-dev libcilkrts5
+  apt install -y wget build-essential git vim software-properties-common 
 
   apt install -y curl vim git libhdf5-dev
   apt install -y libssl-dev libxml2-dev python3-pip
@@ -24,6 +23,10 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
 
   pip3 install --upgrade pip
   pip3 install --upgrade jupyter jupyterlab ipython-autotime ipywidgets
+
+  add-apt-repository "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/"
+  wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
+  add-apt-repository "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/"
 
   apt  install -y r-cran-irkernel r-cran-irdisplay r-cran-seurat python3-ipykernel
 
