@@ -9,7 +9,7 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
   # Install R, Python, misc. utilities
   apt-get install -y libopenblas-dev libcurl4-openssl-dev libopenmpi-dev openmpi-bin openmpi-common openmpi-doc openssh-client openssh-server
 
-  apt install -y wget build-essential git vim
+  apt install -y wget build-essential git vim 
   apt install -y libmetis-dev libtbb-dev libfftw3-dev lib32gcc-7-dev libflann-dev libcilkrts5
 
   apt install -y curl vim git libhdf5-dev
@@ -19,20 +19,19 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
 
   ## next is important for python tsne
   apt install -y libatlas-base-dev
+  ## cellexalvrR
   apt install -y pandoc
+
+  pip3 install --upgrade pip
+  pip3 install --upgrade jupyter jupyterlab ipython-autotime ipywidgets
+
+  apt  install -y r-cran-irkernel r-cran-irdisplay r-cran-seurat python3-ipykernel
+
   apt clean
 
   mkdir /workspace
   echo "jupyter lab --port 9734 --ip=0.0.0.0 --allow-root --no-browser" > /workspace/launch_jupyter.sh
   chmod +x /workspace/launch_jupyter.sh
-
-  pip3 install --upgrade pip
-  pip3 install --upgrade --no-cache-dir -U numpy==1.21.5 pybind11
-  pip3 install --upgrade --no-cache-dir -U dask[array] dask[distributed]
-
-  pip3 install --upgrade git+https://github.com/fraenkel-lab/pcst_fast.git
-  pip3 install --upgrade jupyterlab ipython-autotime ipywidgets
-
 
 %runscript
   /workspace/launch_jupyter.sh
