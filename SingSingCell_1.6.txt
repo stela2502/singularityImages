@@ -18,12 +18,12 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
   apt install -y nodejs cmake
 
   ## next is important for python tsne
-  apt install -y libatlas-base-dev
+  apt install -y libatlas-base-dev liblapack-dev
   ## cellexalvrR
-  apt install -y pandoc
+  apt install -y pandoc pip
 
-  pip3 install --upgrade pip
-  pip3 install --upgrade jupyter jupyterlab ipython-autotime ipywidgets
+  pip install --upgrade pip
+  pip install --upgrade jupyter jupyterlab ipython-autotime ipywidgets meson
 
   add-apt-repository "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/"
   wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
@@ -34,55 +34,71 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
   #######################################################################
 
   apt-get install libc6-dev ## TSNE needs that
-
-  pip3 install --upgrade scanpy scvelo anndata
+  apt-get install libfreetype6-dev libgl1-mesa-glx
+  apt remove python3-matplotlib # there is a version incompatibility with the new versions that fucks python up! 2024.04.17
+  pip install --upgrade scanpy scvelo anndata
   
-  pip3 install --upgrade scikit-network
-  pip3 install --upgrade Sphinx sphinx-autodoc-typehints nbsphinx sphinx_rtd_theme
+  pip install --upgrade scikit-network
+  pip install --upgrade Sphinx sphinx-autodoc-typehints nbsphinx sphinx_rtd_theme
 
-  pip3 install git+https://github.com/fraenkel-lab/pcst_fast.git@deb3236cc26ee9fee77d5af40fac3f12bb753850
-  pip3 install -U topacedo
-  pip3 install --upgrade scarf
+  pip install git+https://github.com/fraenkel-lab/pcst_fast.git@deb3236cc26ee9fee77d5af40fac3f12bb753850
+  pip install -U topacedo
+  pip install --upgrade scarf
 
-  pip3 install --upgrade scanpy[louvain]
-  pip3 install --upgrade scanpy[leiden]
-  pip3 install --upgrade scrublet
-  pip3 install --upgrade pypairs
+  pip install --upgrade scikit-network scanpy[louvain]
+  pip install --upgrade scanpy[leiden]
+  pip install --upgrade scrublet
+  pip install --upgrade pypairs
 
-  pip3 install --upgrade igraph
-  pip3 install --upgrade phate
+  #pip install --upgrade igraph
+  #pip install --upgrade phate
 
-  pip3 install --upgrade scvelo
+  pip install --upgrade scvelo
 
-  pip3 install --upgrade harmonypy
-  pip3 install mnnpy
-  pip3 install bbknn
+  pip install --upgrade harmonypy
+  pip install mnnpy
+  pip install bbknn
 
-  pip3 install palantir
-#  pip3 install --upgrade tsne
+  #pip install palantir
+#  pip install --upgrade tsne
 
-  pip3 install pybind11 hnswlib memory_profiler
+  #pip install pybind11 hnswlib memory_profiler
 
-  pip3 install --upgrade procpath
+  pip install --upgrade procpath
 
   ## the templates funnily are root read only and hence unusable
 
-  pip3 install --upgrade nbconvert
+  pip install --upgrade nbconvert
 
-  pip3 install jupyter_contrib_nbextensions
+  pip install jupyter_contrib_nbextensions
 
-  #pip3 install git+https://github.com/stela2502/ScanpyAutoAnalyzer
+  #pip install git+https://github.com/stela2502/ScanpyAutoAnalyzer
   #chmod 777 -R  /usr/share/jupyter/nbconvert/templates/
 
   # to create genomes for alevin-fry
-  pip3 install pyroe
+
+  apt install -y python3.10-venv
+  
+  #mkdir -p /opt/python_envs/
+  #python3 -m venv /opt/python_envs/pyroe
+  #source /opt/python_envs/pyroe/bin/activate
+  #pip install pyroe ipykernel anndata
+  #python3 -m ipykernel install --name=pyroe
+  #deactivate
+
+  #python3 -m venv /opt/python_envs/cellphonedb
+  #source /opt/python_envs/cellphonedb/bin/activate
+  #pip install cellphonedb ipykernel anndata
+  #python3 -m ipykernel install --name=cellphonedb
+  #deactivate
+
   apt  install -y gffread rustc bedtools ## in the wrong version
   #wget https://github.com/arq5x/bedtools2/releases/download/v2.30.0/bedtools.static.binary
   #mv bedtools.static.binary /usr/bin/bedtools
   #chmod a+x /usr/bin/bedtools
   
   # cool integration method using PyTorch in the back.
-  pip3 install scvi-tools
+  pip install scvi-tools
 
   #and here comes the scary bit: Rust and alevin-fry - install it from git :-D
   #curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -121,8 +137,8 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
   echo "BiocManager::install('celldex')" >> Install_SingleR.R
   echo "BiocManager::install('scRNAseq')" >> Install_SingleR.R
   echo "BiocManager::install('scuttle')" >> Install_SingleR.R
-  echo "BiocManager::install('zellkonverter')" >> Install_SingleR.R)
-  echo "BiocManager::install('scran')" >> Install_SingleR.R)
+  echo "BiocManager::install('zellkonverter')" >> Install_SingleR.R
+  echo "BiocManager::install('scran')" >> Install_SingleR.R
   R CMD BATCH Install_SingleR.R
 
   ## SingleR
@@ -160,11 +176,8 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
   echo 'install.packages(c("FactoMineR", "factoextra"))' > install_ca.R
   R CMD BATCH install_ca.R
   ## and Python
-  pip3 install prince
+  pip install prince
 
-  #pip3 install --upgrade cellphonedb
-  ## pandas has a but that kills cellrank and likely a lot more, but is fixed in the git repo.
-  pip3 install git+https://github.com/pandas-dev/pandas.git
 
   mkdir /workspace
   echo "jupyter lab --port 9734 --ip=0.0.0.0 --allow-root --no-browser" > /workspace/launch_jupyter.sh
