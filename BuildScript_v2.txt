@@ -117,7 +117,7 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
 
   ## the templates funnily are root read only and hence unusable
 
-  pip3 install --upgrade nbconvert
+  pip3 install --upgrade nbconvert papermill
 
   pip3 install jupyter_contrib_nbextensions
 
@@ -154,16 +154,21 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
 
   apt install -y r-base r-base-dev
 
-  echo "install.packages('devtools')" > Install_devtools.R
+  echo ".libPaths("/usr/local/lib/R/site-library")" > Install_devtools.R
+  echo "install.packages('devtools')" >> Install_devtools.R
   R CMD BATCH Install_devtools.R
 
-  echo "install.packages('Seurat')" > Install_Seurat.R
+  echo ".libPaths("/usr/local/lib/R/site-library")" > Install_Seurat.R
+  echo "install.packages('Seurat')" >> Install_Seurat.R
   R CMD BATCH Install_Seurat.R
 
-  echo "devtools::install_github('sonejilab/cellexalvrR' )" > Install_cellexalvrR.R
+  echo ".libPaths("/usr/local/lib/R/site-library")" > Install_cellexalvrR.R
+  echo "devtools::install_github('sonejilab/FastWilocxTest' )"  >> Install_cellexalvrR.R
+  echo "devtools::install_github('sonejilab/cellexalvrR' )" >> Install_cellexalvrR.R
   R CMD BATCH Install_cellexalvrR.R
 
-  echo "devtools::install_github('satijalab/seurat-data')" > Install_seurat-data.R
+  echo ".libPaths("/usr/local/lib/R/site-library")" > Install_seurat-data.R
+  echo "devtools::install_github('satijalab/seurat-data')" >> Install_seurat-data.R
   R CMD BATCH Install_seurat-data.R
 
   # skip that as it would need rgl to be installed
@@ -173,17 +178,20 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
   apt install -y jupyter 
   pip3 install jupyterlab --upgrade
 
-  echo 'devtools::install_github("IRkernel/IRkernel")' > Install_IRkernel.R
+  echo ".libPaths("/usr/local/lib/R/site-library")" > Install_IRkernel.R
+  echo 'devtools::install_github("IRkernel/IRkernel")' >> Install_IRkernel.R
   echo 'IRkernel::installspec(user=FALSE)' >> Install_IRkernel.R
   R CMD BATCH Install_IRkernel.R
 
-  echo "if (!require('BiocManager', quietly = TRUE))" > Install_DESeq2.R
+  echo ".libPaths("/usr/local/lib/R/site-library")" > Install_DESeq2.R
+  echo "if (!require('BiocManager', quietly = TRUE))" >> Install_DESeq2.R
   echo "  install.packages('BiocManager')" >> Install_DESeq2.R
   echo "" >> Install_DESeq2.R
   echo "BiocManager::install('DESeq2')"  >> Install_DESeq2.R
   R CMD BATCH Install_DESeq2.R
 
-  echo "BiocManager::install('SingleR')" > Install_SingleR.R
+  echo ".libPaths("/usr/local/lib/R/site-library")" > Install_SingleR.R
+  echo "BiocManager::install('SingleR')" >> Install_SingleR.R
   echo "BiocManager::install('celldex')" >> Install_SingleR.R
   echo "BiocManager::install('scRNAseq')" >> Install_SingleR.R
   echo "BiocManager::install('scuttle')" >> Install_SingleR.R
@@ -219,11 +227,13 @@ MirrorURL: http://archive.ubuntu.com/ubuntu/
   
   R CMD BATCH Install_SingleR.R
 
+  echo ".libPaths("/usr/local/lib/R/site-library")" > Install_DESeq2_heatmap.R
   echo "BiocManager::install(c('circlize', 'digest', 'cluster', 'ComplexHeatmap' ))"  >> Install_DESeq2_heatmap.R
   R CMD BATCH Install_DESeq2_heatmap.R
 
   ## CA - Correspondence Analysis in R
-  echo 'install.packages(c("FactoMineR", "factoextra"))' > install_ca.R
+  echo ".libPaths("/usr/local/lib/R/site-library")" > install_ca.R
+  echo 'install.packages(c("FactoMineR", "factoextra"))' >> install_ca.R
   R CMD BATCH install_ca.R
   ## and Python
   pip3 install prince
